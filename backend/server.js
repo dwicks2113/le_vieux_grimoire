@@ -1,11 +1,50 @@
 const http = require('http');
 const app = require('./app'); // Import the app from app.js
 
-app.set('port', process.env.PORT || 3000);
-// Middleware to parse JSON request bodies
+// const normalizePort = val => {
+//     const port = parseInt(val, 10);
+//     if (isNaN(port)){
+//         return val; // named pipe
+//     } 
+//     if (port >= 0) {
+//         return port; // port number
+//     } 
+//     return false;
+// };
 
-const server = http.createServer((req, res) => {
-    res.end('This is the backend server response!');
-});
+//  const port = normalizePort(process.env.PORT || '3000');
+// app.set('port', port);
+// // Middleware to parse JSON request bodies
+
+// const errorHandler = error => {
+//     if (error.syscall !== 'listen') {
+//         throw error;
+//     }
+//     const address = server.address();
+//     const bind = typeof address === 'string' ? 'pipe ' + address : 'port: ' + port;
+//     switch (error.code) {
+//         case 'EACCES':
+//             console.error(bind + ' requires elevated privileges');
+//             process.exit(1);
+//             break;
+//         case 'EADDRINUSE':
+//             console.error(bind + ' is already in use');
+//             process.exit(1);
+//             break;
+//         default:
+//             throw error;
+//     }
+// };
+
+app.set('port', process.env.PORT || 3000); // Set the port to 3000 or the value from the environment variable PORT
+const server = http.createServer(app);
+
+
+// server.on('error', errorHandler);
+// server.on('listening', () => {
+//     const address = server.address();
+//     const bind = typeof address === 'string' ? 'pipe ' + address : 'port: ' + port;
+//     console.log('Listening on ' + bind);
+// });
 
 server.listen(process.env.PORT || 3000);
