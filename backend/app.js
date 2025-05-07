@@ -4,7 +4,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const Thing = require('./models/thing'); // Import the Thing model
+const stuffRoutes = require('./routes/stuff');
 const app = express();
 require('dotenv').config();
 console.log('MondoDB URI:', process.env.MONGO_URI); // Log the MongoDB URI to check if it's being loaded correctly
@@ -18,10 +18,8 @@ mongoose.connect(process.env.MONGO_URI, {
   .then(() => console.log('Successfully connected to MongoDB Atlas!'))
   .catch(error => console.error('Unable to connect to MongoDB Atlas!', error));
 
-const Thing = require('./models/thing'); // Import the Thing model
-
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader(
     'Access-Control-Allow-Headers',
     'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization'
@@ -33,85 +31,7 @@ app.use((req, res, next) => {
   next()
 });
 
-app.post('/api/stuff', (req, res, next) => {
-  const thing = new Thing({
-    author: req.body.author,
-    title: req.body.title,
-    description: req.body.description,
-    license: req.body.license,
-    userId: req.body.userId
-  });
-  thing.save()
-    .then(() => {
-      res.status(201).json({
-        message: 'Post saved successfully!'
-      });
-    })
-    .catch(error => {
-      res.status(400).json({
-        error: error
-      });
-    });
-});
 
-app.get('/api/stuff/:id', (req, res, next) => {
-  Thing.findOne({
-    _id: req.params.id
-  })
-    .then(thing => {
-      res.status(200).json(thing);
-    })
-    .catch(error => {
-      res.status(404).json({
-        error: error
-      });
-    });
-});
+app.use({'/api/stuff': stuffRoutes});
 
-app.put('/api/stuff/:id', (req, res, next) => {
-  const thing = new Thing({
-    _id: req.params.id,
-    author: req.body.author,
-    title: req.body.title,
-    description: req.body.description,
-    userId: req.body.userId
-  });
-  Thing.updateOne({ _id: req.params.id }, thing)
-    .then(() => {
-      res.status(201).json({
-        message: 'Book updated successfully!'
-      });
-    })
-    .catch(error => {
-      res.status(400).json({
-        error: error
-      });
-    });
-});
-
-app.delete('/api/stuff/:id', (req, res, next) => {
-  Thing.deleteOne({ _id: req.params.id })
-    .then(() => {
-      res.status(200).json({
-        message: 'Deleted!'
-      });
-    })
-    .catch(error => {
-      res.status(400).json({
-        error: error
-      });
-    });
-});
-
-app.use('/api/stuff', (req, res, next) => {
-  Thing.find()
-    .then(things => {
-      res.status(200).json(things);
-    })
-    .catch(error => {
-      res.status(400).json({
-        error: error
-      });
-    });
-});
 module.exports = app;
