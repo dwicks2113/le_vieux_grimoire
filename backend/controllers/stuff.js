@@ -59,7 +59,19 @@ exports.modifyThing = (req, res, next) => {
 };
 
 exports.deleteThing = (req, res, next) => {
-  Thing.deleteOne({ _id: req.params.id })
+  Thing.findOne({ _id: req.params.id })
+    .then(thing => {
+      if (!thing) {
+        return res.status(404).json({
+          error: new Error('No such Thing!')
+        });
+      }
+      if (thing.userId !== req.auth.userId) {
+        return res.status(401).json({
+          error: new Error('Unauthorized request!')
+        });
+      }
+      Thing.deleteOne({ _id: req.params.id })
     .then(() => {
       res.status(200).json({
         message: 'Deleted!'
@@ -70,9 +82,10 @@ exports.deleteThing = (req, res, next) => {
         error: error
       });
     });
+  });
 };
-
-exports.getAllStuff = (req, res, next) => {
+  
+exports.getAllThings = (req, res, next) => {
   Thing.find()
     .then(things => {
       res.status(200).json(things);

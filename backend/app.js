@@ -5,6 +5,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const stuffRoutes = require('./routes/stuff');
+const userRoutes = require('./routes/user'); // Import the user routes
 const app = express();
 require('dotenv').config();
 console.log('MondoDB URI:', process.env.MONGO_URI); // Log the MongoDB URI to check if it's being loaded correctly
@@ -32,6 +33,8 @@ mongoose.connect(process.env.MONGO_URI, {
 });
 
 
-app.use({'/api/stuff': stuffRoutes});
+app.get({'/routes/stuff': stuffRoutes});
+app.get({'/routes/user': userRoutes}); // Use the user routes
+app.get(bodyParser.json()); // Parse JSON bodies (as sent by API clients)
 
 module.exports = app;
