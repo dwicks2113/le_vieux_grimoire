@@ -1,6 +1,6 @@
 //mondgoDB password: Athena.01
 //mondgoDB connection: mongodb+srv://dwicks2113:<db_password>@cluster0.o7wq16x.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
-
+const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -18,7 +18,7 @@ mongoose.connect(process.env.MONGO_URI, {
   })
   .then(() => console.log('Successfully connected to MongoDB Atlas!'))
   .catch(error => console.error('Unable to connect to MongoDB Atlas!', error));
-
+  app.use('/images', express.static(path.join(__dirname, 'images')));
   app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader(
